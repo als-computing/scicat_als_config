@@ -36,6 +36,6 @@ While for a runtime container, it would look like the following. Note the critic
 
 ```yaml
     volumes:
-      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-service-factory.ts:/home/node/app/dist/auth/access-group-provider/access-group-service-factory.js
-      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-from-4D.service.ts:/home/node/app/dist/auth/access-group-provider/access-group-from-4D.service.js
+      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-service-factory.js:/home/node/app/dist/auth/access-group-provider/access-group-service-factory.js
+      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-from-4D.service.js:/home/node/app/dist/auth/access-group-provider/access-group-from-4D.service.js
 ```
