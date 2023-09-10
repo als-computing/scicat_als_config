@@ -1,6 +1,6 @@
 {
 
-    "lbBaseURL": "https://dataportal.als.lbl.gov/api/v3",
+    "lbBaseURL": "https://dataportal.als.lbl.gov",
     "jupyterHubUrl": "https://jupyter.nersc.gov",
     "accessTokenPrefix": "Bearer ",
     "addDatasetEnabled": false,
