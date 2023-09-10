@@ -114,7 +114,7 @@
       {
         "displayText": "ORCID",
         "displayImage": "../../../assets/images/ORCIDiD_iconvector.svg",
-        "authURL": "api/v3/auth/oidc"
+        "authURL": "/api/v3/auth/oidc"
       }
     ]
   }
