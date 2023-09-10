@@ -1,6 +1,6 @@
 {
 
-    "lbBaseURL": "frontend/dev-config.json",
+    "lbBaseURL": "https://dataportal.als.lbl.gov/api/v3",
     "jupyterHubUrl": "https://jupyter.nersc.gov",
     "accessTokenPrefix": "Bearer ",
     "addDatasetEnabled": false,
