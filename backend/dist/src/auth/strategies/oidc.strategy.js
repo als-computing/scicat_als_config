@@ -8,8 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var ALSUserApiService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OidcStrategy = exports.BuildOpenIdClient = void 0;
+exports.ALSUserApiService = exports.OidcStrategy = exports.BuildOpenIdClient = void 0;
+const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const passport_1 = require("@nestjs/passport");
@@ -17,6 +19,7 @@ const users_service_1 = require("../../users/users.service");
 const openid_client_1 = require("openid-client");
 const auth_service_1 = require("../auth.service");
 const access_group_service_1 = require("../access-group-provider/access-group.service");
+const rxjs_1 = require("rxjs");
 class BuildOpenIdClient {
     configService;
     constructor(configService) {
@@ -40,6 +43,7 @@ let OidcStrategy = class OidcStrategy extends (0, passport_1.PassportStrategy)(o
     accessGroupService;
     client;
     authStrategy = "oidc";
+    alsUserService;
     constructor(authService, client, configService, usersService, accessGroupService) {
         const oidcConfig = configService.get("oidc");
         super({
@@ -55,21 +59,14 @@ let OidcStrategy = class OidcStrategy extends (0, passport_1.PassportStrategy)(o
         this.configService = configService;
         this.usersService = usersService;
         this.accessGroupService = accessGroupService;
+        this.alsUserService = new ALSUserApiService(new axios_1.HttpService());
         this.client = client;
     }
     async validate(tokenset) {
-        const userinfo = await this.client.userinfo(tokenset);
+        const userTokenInfo = await this.client.userinfo(tokenset);
         const oidcConfig = this.configService.get("oidc");
-        const userProfile = this.parseUserInfo(userinfo);
-        const userPayload = {
-            userId: userProfile.id,
-            username: userProfile.username,
-            email: userProfile.email,
-            accessGroupProperty: oidcConfig?.accessGroupProperty,
-            payload: userinfo,
-        };
-        userProfile.accessGroups =
-            await this.accessGroupService.getAccessGroups(userPayload);
+        const alshubProfile = await this.alsUserService.getALSUesrInfo(userTokenInfo.sub);
+        const userProfile = this.parseUserInfo(userTokenInfo, alshubProfile);
         const userFilter = {
             $or: [
                 { username: `oidc.${userProfile.username}` },
@@ -116,18 +113,17 @@ let OidcStrategy = class OidcStrategy extends (0, passport_1.PassportStrategy)(o
                 Buffer.from(userinfo.thumbnailPhoto, "binary").toString("base64")
             : "no photo";
     }
-    parseUserInfo(userinfo) {
+    parseUserInfo(userinfo, alshubProfile) {
         const profile = {};
         const userId = userinfo.sub || userinfo.user_id;
         if (!userId) {
             throw new Error("Could not find sub or user_id in userinfo response");
         }
         profile.id = userId;
-        profile.username = userinfo.preferred_username ?? userinfo.name ?? "";
-        profile.displayName = userinfo.name ?? "";
-        profile.emails = userinfo.email ? [{ value: userinfo.email }] : [];
-        profile.email = userinfo.email ?? "";
-        profile.thumbnailPhoto = this.getUserPhoto(userinfo);
+        profile.username = alshubProfile.orcid;
+        profile.displayName = `${alshubProfile.given_name} ${alshubProfile.family_name}`;
+        profile.email = alshubProfile.current_email;
+        profile.accessGroups = alshubProfile.groups;
         return profile;
     }
 };
@@ -138,4 +134,29 @@ OidcStrategy = __decorate([
         access_group_service_1.AccessGroupService])
 ], OidcStrategy);
 exports.OidcStrategy = OidcStrategy;
+let ALSUserApiService = ALSUserApiService_1 = class ALSUserApiService {
+    httpService;
+    logger = new common_1.Logger(ALSUserApiService_1.name);
+    constructor(httpService) {
+        this.httpService = httpService;
+    }
+    async getALSUesrInfo(orcid) {
+        const apiURL = `${process.env.USER_SVC_API_URL}/${orcid}/orcid?api_key=${process.env.USER_SVC_API_KEY}`;
+        common_1.Logger.log(`talking to ${apiURL}`);
+        const response = await (0, rxjs_1.firstValueFrom)(this.httpService.get(apiURL, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).pipe((0, rxjs_1.catchError)((error) => {
+            this.logger.log(`Could not get ALS information for orcid ${orcid} ${error.response?.data}`);
+            return [];
+        })));
+        return response.data;
+    }
+};
+ALSUserApiService = ALSUserApiService_1 = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [axios_1.HttpService])
+], ALSUserApiService);
+exports.ALSUserApiService = ALSUserApiService;
 //# sourceMappingURL=oidc.strategy.js.map
