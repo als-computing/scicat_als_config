@@ -28,14 +28,16 @@ For a development container, you would map files into the backend service like:
 ```yaml
     volumes:
       - ./scicat-backend-next:/home/node/app
-      - ./scicat-als-config/backend/src/auth/access-group-provider/access-group-service-factory.ts:/home/node/app/src/auth/access-group-provider/access-group-service-factory.ts
-      - ./scicat-als-config/backend/src/auth/access-group-provider/access-group-from-4D.service.ts:/home/node/app/src/auth/access-group-provider/access-group-from-4D.service.ts
+      - /home/node/app/node_modules
+      - /home/node/app/dist
+      - ./scicat_als_config/frontend/dev-config.json:/home/node/app/dist/src/config/frontend.config.json
+      - ./scicat_als_config/backend/src/auth/strategies/oidc.strategy.ts:/home/node/app/src/auth/strategies/oidc.strategy.ts
 ```
 
 While for a runtime container, it would look like the following. Note the critical differences are `src` to `dist` and `.ts` to `js`.
 
 ```yaml
     volumes:
-      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-service-factory.js:/home/node/app/dist/auth/access-group-provider/access-group-service-factory.js
-      - ./scicat-als-config/backend/dist/auth/access-group-provider/access-group-from-4D.service.js:/home/node/app/dist/auth/access-group-provider/access-group-from-4D.service.js
+      - ./scicat_als_config/frontend/prod-config.json:/home/node/app/dist/src/config/frontend.config.json
+      - ./scicat_als_config/backend/dist/src/auth/strategies/oidc.strategy.ts:/home/node/app/dist/src/auth/strategies/oidc.strategy.js
 ```

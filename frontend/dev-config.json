@@ -1,8 +1,8 @@
 {
 
-    "lbBaseURL": "http://localhost:8080",
+    "lbBaseURL": "https://devportal.me",
     "jupyterHubUrl": "https://jupyter.nersc.gov",
-    "externalAuthEndpoint": "http://localhost:3000/auth/msad",
+    "externalAuthEndpoint": "http://localhost:3000/auth/msad", 
     "accessTokenPrefix": "Bearer ",
     "addDatasetEnabled": false,
     "archiveWorkflowEnabled": true,
@@ -112,11 +112,6 @@
     "policiesEnabled": false,
     "loginFormEnabled": true,
     "oAuth2Endpoints": [
-      {
-        "displayText": "Google",
-        "displayImage": "../../../assets/images/btn_google_light_normal_ios.svg",
-        "authURL": "api/v3/auth/oidc"
-      },
       {
         "displayText": "ORCID",
         "displayImage": "../../../assets/images/ORCIDiD_iconvector.svg",
