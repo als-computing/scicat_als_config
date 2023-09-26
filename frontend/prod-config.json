@@ -109,7 +109,7 @@
     "gettingStarted": "",
     "jobsEnabled": true,
     "policiesEnabled": false,
-    "loginFormEnabled": false,
+    "loginFormEnabled": true,
     "oAuth2Endpoints": [
       {
         "displayText": "ORCID",
