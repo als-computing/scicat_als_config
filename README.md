@@ -39,5 +39,5 @@ While for a runtime container, it would look like the following. Note the critic
 ```yaml
     volumes:
       - ./scicat_als_config/frontend/prod-config.json:/home/node/app/dist/src/config/frontend.config.json
-      - ./scicat_als_config/backend/dist/src/auth/strategies/oidc.strategy.ts:/home/node/app/dist/src/auth/strategies/oidc.strategy.js
+      - ./scicat_als_config/backend/dist/src/auth/strategies/oidc.strategy.js:/home/node/app/dist/src/auth/strategies/oidc.strategy.js
 ```
